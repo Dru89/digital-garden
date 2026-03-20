@@ -9,12 +9,20 @@
                 {% endif %}
             </a>
         </div>
-        {% if settings.dgEnableSearch === true%}
-            {% include "components/searchButton.njk" %}
-        {%endif%}
+        <div class="navbar-actions">
+            <button class="theme-toggle" onclick="window.__setTheme(window.__theme === 'dark' ? 'light' : 'dark')" aria-label="Toggle theme">
+                <i class="theme-toggle-icon" data-lucide="sun"></i>
+            </button>
+            {% if settings.dgEnableSearch === true%}
+                {% include "components/searchButton.njk" %}
+            {%endif%}
+        </div>
     </nav>
     {%else%}
     <div class="empty-navbar" >
+        <button class="theme-toggle" onclick="window.__setTheme(window.__theme === 'dark' ? 'light' : 'dark')" aria-label="Toggle theme">
+            <i class="theme-toggle-icon" data-lucide="sun"></i>
+        </button>
         {% if settings.dgEnableSearch === true%}
             {% include "components/searchButton.njk" %}
         {%endif%}

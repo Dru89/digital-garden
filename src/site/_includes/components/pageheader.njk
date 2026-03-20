@@ -1,6 +1,43 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<script>
+  // Determine theme before any CSS loads to prevent flash of wrong theme.
+  // Priority: localStorage override > system preference > build-time default.
+  (function() {
+    var stored = localStorage.getItem('theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var theme = stored || (prefersDark ? 'dark' : 'light');
+    window.__theme = theme;
+
+    // Swap the class on <html> immediately so CSS variables resolve correctly
+    // before stylesheets are applied. The body class is swapped separately
+    // after the <body> tag opens (see layout templates).
+    document.documentElement.classList.add('theme-' + theme);
+
+    window.__setTheme = function(t) {
+      var old = t === 'dark' ? 'light' : 'dark';
+      document.documentElement.classList.remove('theme-' + old);
+      document.documentElement.classList.add('theme-' + t);
+      document.body.className = document.body.className.replace(/theme-\w+/, 'theme-' + t);
+      localStorage.setItem('theme', t);
+      window.__theme = t;
+
+      // Update toggle icon if present
+      var icon = document.querySelector('.theme-toggle-icon');
+      if (icon) icon.setAttribute('data-lucide', t === 'dark' ? 'sun' : 'moon');
+      if (window.lucide) lucide.createIcons({ attrs: { class: ['svg-icon'] } });
+    };
+
+    // Listen for system preference changes (only applies if user hasn't overridden)
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+      if (!localStorage.getItem('theme')) {
+        window.__setTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+  })();
+</script>
+
 {% if metatags %}
     {% for name, content in metatags %}
         {% if name.includes("og:") %}

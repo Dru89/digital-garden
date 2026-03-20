@@ -14,6 +14,7 @@
         <link href="/styles/custom-style.css" rel="stylesheet">
     </head>
     <body class="theme-{{meta.baseTheme}} markdown-preview-view">
+        <script>if(window.__theme){document.body.className=document.body.className.replace(/theme-\w+/,'theme-'+window.__theme)}</script>
         <div class="content centered">
 
             {%-if not meta.themeStyle%}

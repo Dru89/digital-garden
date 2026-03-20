@@ -1,6 +1,11 @@
 <script defer src="https://unpkg.com/lucide@latest"></script>
 <script defer>
   document.addEventListener('DOMContentLoaded', () => {
+    // Set the correct toggle icon before Lucide renders
+    var icon = document.querySelector('.theme-toggle-icon');
+    if (icon && window.__theme) {
+      icon.setAttribute('data-lucide', window.__theme === 'dark' ? 'sun' : 'moon');
+    }
     lucide.createIcons({
       attrs: { class: ['svg-icon'] }
     });
