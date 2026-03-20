@@ -7,53 +7,97 @@ body {
 
 // ==========================================================================
 // Search light-mode fixes
-// The base template hardcodes several dark-mode-only values. These overrides
-// ensure the search UI works correctly in both themes.
+//
+// The Red Graphite theme maps --background-secondary to a very dark color in
+// light mode (it's meant for Obsidian's sidebar). The base garden template
+// uses --background-secondary for search input backgrounds, result cards, etc.
+// which makes them render dark-on-light. These overrides use --background-
+// modifier-form-field and --background-primary-alt instead, and scope explicit
+// fixes under .theme-light to avoid breaking dark mode.
 // ==========================================================================
 
-// Fix: --text-primary is never defined. Use --text-normal instead.
+// Fix: --text-primary is never defined in any theme. Use --text-normal.
 .search-box input {
     color: var(--text-normal);
 }
 
-// Placeholder text
+// Placeholder text (missing from base template entirely)
 .search-box input::placeholder {
     color: var(--text-faint, var(--text-muted));
     opacity: 0.7;
 }
 
-// Fix: hardcoded white-tint hover/active backgrounds on search results
-.searchresult {
-    &:hover {
-        background-color: var(--background-primary-alt, var(--background-secondary));
+// Light-mode-specific overrides for search UI
+.theme-light {
+    // Search input: use form-field background instead of --background-secondary
+    .search-box input {
+        background-color: var(--background-modifier-form-field, var(--background-primary));
+        border-color: var(--background-modifier-border);
     }
 
-    &.active {
-        background-color: var(--background-primary-alt, var(--background-secondary));
+    // Search result cards: use a subtle tint instead of dark --background-secondary
+    .searchresult {
+        background-color: var(--background-primary-alt, #f5f5f5);
+
+        &:hover {
+            background-color: var(--background-modifier-hover, rgba(0, 0, 0, 0.05));
+        }
+
+        &.active {
+            background-color: var(--background-modifier-hover, rgba(0, 0, 0, 0.08));
+        }
+    }
+
+    // Result tags and preview tags
+    .result-tags .tag,
+    .preview-tags .tag {
+        background-color: rgba(0, 0, 0, 0.06);
+        color: var(--text-muted);
+    }
+
+    // Keyboard shortcut badges
+    .search-keys {
+        background-color: rgba(0, 0, 0, 0.06);
+        color: var(--text-faint);
+    }
+
+    // Search button in navbar
+    .search-button {
+        background-color: var(--background-primary);
+        border-color: var(--background-modifier-border);
+    }
+
+    // Preview code blocks
+    .preview-content .preview-body {
+        code {
+            background-color: var(--background-primary-alt, #f0f0f0);
+        }
+
+        pre {
+            background-color: var(--background-primary-alt, #f0f0f0);
+        }
     }
 }
 
-// Fix: hardcoded white-tint background on result tags
-.result-tags .tag {
-    background-color: var(--background-secondary-alt, var(--background-secondary));
-}
+// Dark mode: keep the original behavior but fix the broken variable references
+.theme-dark {
+    .searchresult {
+        &:hover {
+            background-color: var(--background-primary-alt, rgba(255, 255, 255, 0.05));
+        }
 
-// Fix: hardcoded white-tint background on keyboard shortcut badges
-.search-keys {
-    background-color: var(--background-secondary-alt, var(--background-secondary));
-    color: var(--text-faint);
-}
-
-// Fix: preview code blocks should use theme-aware colors
-.preview-content .preview-body {
-    code {
-        background-color: var(--background-secondary);
-        color: var(--text-normal);
+        &.active {
+            background-color: var(--background-primary-alt, rgba(255, 255, 255, 0.08));
+        }
     }
 
-    pre {
-        background-color: var(--background-secondary);
-        color: var(--text-normal);
+    .result-tags .tag {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .search-keys {
+        background-color: rgba(255, 255, 255, 0.08);
+        color: var(--text-faint);
     }
 }
 
