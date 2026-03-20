@@ -1,13 +1,12 @@
 ---
-{"dg-publish":true,"permalink":"/projects/gdocs-tools/","tags":["tooling","google-drive"],"updated":"2026-03-19T21:46:46.867-07:00"}
+{"dg-publish":true,"permalink":"/projects/gdocs-tools/","tags":["tooling","google-drive"],"updated":"2026-03-19T22:00:08.634-07:00"}
 ---
 
 ## Overview
 
 CLI tools for working with Google Docs from the command line. Download Google Docs/Slides/Sheets to local markdown (`gfetch`), upload markdown to Google Docs with custom styling and multi-tab support (`gpush`), and transcribe audio/video files locally (`transcribe`).
 
-**Repo**: https://github.twdcgrid.net/drew-hays/gdocs-tools
-**Transcribe repo**: https://github.twdcgrid.net/drew-hays/transcribe
+
 
 ### What exists today
 
