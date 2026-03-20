@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/projects/gdocs-tools/","tags":["tooling","google-drive"],"updated":"2026-03-19T22:00:08.634-07:00"}
+{"dg-publish":true,"permalink":"/projects/gdocs-tools/","tags":["tooling","google-drive"],"updated":"2026-03-19T22:04:30.151-07:00"}
 ---
 
 ## Overview
@@ -10,7 +10,7 @@ CLI tools for working with Google Docs from the command line. Download Google Do
 
 ### What exists today
 
-- `gfetch` — Download Google Docs → markdown, Slides → pptx + slides.md, Sheets → xlsx. Comments, multi-tab docs, frontmatter with author/url/tags.
+- `gfetch` — Download Google Docs → markdown, Slides → `file.pptx` + `file.slides.md`, Sheets → `file.xlsx` + `file.comments.md`. Comments, multi-tab docs, frontmatter with author/url/tags.
 - `gpush` — Upload markdown → Google Docs (with custom pandoc reference doc), markdown → Google Slides, native docx/pptx/xlsx upload. Multi-tab docs, pageless mode, sharing, post-upload frontmatter update.
 - `transcribe` — whisper.cpp wrapper for local audio/video transcription with Metal acceleration.
 - Config system, skills for OpenCode and Claude Code, install scripts.
