@@ -5,6 +5,62 @@ body {
    ***/
 }
 
+// ==========================================================================
+// Search light-mode fixes
+// The base template hardcodes several dark-mode-only values. These overrides
+// ensure the search UI works correctly in both themes.
+// ==========================================================================
+
+// Fix: --text-primary is never defined. Use --text-normal instead.
+.search-box input {
+    color: var(--text-normal);
+}
+
+// Placeholder text
+.search-box input::placeholder {
+    color: var(--text-faint, var(--text-muted));
+    opacity: 0.7;
+}
+
+// Fix: hardcoded white-tint hover/active backgrounds on search results
+.searchresult {
+    &:hover {
+        background-color: var(--background-primary-alt, var(--background-secondary));
+    }
+
+    &.active {
+        background-color: var(--background-primary-alt, var(--background-secondary));
+    }
+}
+
+// Fix: hardcoded white-tint background on result tags
+.result-tags .tag {
+    background-color: var(--background-secondary-alt, var(--background-secondary));
+}
+
+// Fix: hardcoded white-tint background on keyboard shortcut badges
+.search-keys {
+    background-color: var(--background-secondary-alt, var(--background-secondary));
+    color: var(--text-faint);
+}
+
+// Fix: preview code blocks should use theme-aware colors
+.preview-content .preview-body {
+    code {
+        background-color: var(--background-secondary);
+        color: var(--text-normal);
+    }
+
+    pre {
+        background-color: var(--background-secondary);
+        color: var(--text-normal);
+    }
+}
+
+// ==========================================================================
+// Theme toggle
+// ==========================================================================
+
 .navbar-actions {
     display: flex;
     align-items: center;
