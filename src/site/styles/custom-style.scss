@@ -3,93 +3,129 @@ body {
       ADD YOUR CUSTOM STYLING HERE. (INSIDE THE body {...} section.)
       IT WILL TAKE PRECEDENCE OVER THE STYLING IN THE STYLE.CSS FILE.
    ***/
+
+    // obsidian-base.scss sets --font-text-override and --font-text-theme to
+    // '??' as Style Settings placeholders — the desktop app replaces them at
+    // runtime, but the browser never does. Override the resolved variable
+    // directly so the font stack matches unremarkable.dev.
+    --font-text: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-interface: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-monospace-default: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", monospace;
+
+    // Fluid type scale — exact values from unremarkable.dev (_scales.scss, utopia.fyi)
+    // Base: 16px–18px, ratio 1.2–1.25
+    --step--2: clamp(0.69rem, calc(0.69rem + 0.04vw), 0.72rem);
+    --step--1: clamp(0.83rem, calc(0.81rem + 0.12vw), 0.90rem);
+    --step-0:  clamp(1.00rem, calc(0.96rem + 0.22vw), 1.13rem);
+    --step-1:  clamp(1.20rem, calc(1.13rem + 0.36vw), 1.41rem);
+    --step-2:  clamp(1.44rem, calc(1.33rem + 0.55vw), 1.76rem);
+    --step-3:  clamp(1.73rem, calc(1.56rem + 0.82vw), 2.20rem);
+    --step-4:  clamp(2.07rem, calc(1.84rem + 1.17vw), 2.75rem);
+    --step-5:  clamp(2.49rem, calc(2.16rem + 1.64vw), 3.43rem);
+
+    // Fluid space scale — exact values from unremarkable.dev (_scales.scss)
+    --space-3xs:     clamp(0.25rem, calc(0.23rem + 0.11vw), 0.31rem);
+    --space-2xs:     clamp(0.50rem, calc(0.48rem + 0.11vw), 0.56rem);
+    --space-xs:      clamp(0.75rem, calc(0.71rem + 0.22vw), 0.88rem);
+    --space-s:       clamp(1.00rem, calc(0.96rem + 0.22vw), 1.13rem);
+    --space-m:       clamp(1.50rem, calc(1.43rem + 0.33vw), 1.69rem);
+    --space-l:       clamp(2.00rem, calc(1.91rem + 0.43vw), 2.25rem);
+    --space-xl:      clamp(3.00rem, calc(2.87rem + 0.65vw), 3.38rem);
+    --space-2xl:     clamp(4.00rem, calc(3.83rem + 0.87vw), 4.50rem);
+    --space-3xl:     clamp(6.00rem, calc(5.74rem + 1.30vw), 6.75rem);
+    // One-up pairs
+    --space-3xs-2xs: clamp(0.25rem, calc(0.14rem + 0.54vw), 0.56rem);
+    --space-2xs-xs:  clamp(0.50rem, calc(0.37rem + 0.65vw), 0.88rem);
+    --space-xs-s:    clamp(0.75rem, calc(0.62rem + 0.65vw), 1.13rem);
+    --space-s-m:     clamp(1.00rem, calc(0.76rem + 1.20vw), 1.69rem);
+    --space-m-l:     clamp(1.50rem, calc(1.24rem + 1.30vw), 2.25rem);
+    --space-l-xl:    clamp(2.00rem, calc(1.52rem + 2.39vw), 3.38rem);
+    --space-xl-2xl:  clamp(3.00rem, calc(2.48rem + 2.61vw), 4.50rem);
+    --space-2xl-3xl: clamp(4.00rem, calc(3.04rem + 4.78vw), 6.75rem);
+
+    // Heading sizes using the fluid type scale — matches unremarkable.dev exactly.
+    // Replaces Minimal's nearly-flat scale (h1=1.125em).
+    --h1-size: var(--step-3);
+    --h2-size: var(--step-2);
+    --h3-size: var(--step-1);
+    --h4-size: var(--step-1);
+    --h5-size: var(--step-0);
+    --h6-size: var(--step-0);
+    --h1-weight: 700;
+    --h2-weight: 700;
+    --h3-weight: 600;
+
+    // Pull the garden's content font size into the Utopia type scale.
+    --dg-content-font-size: var(--step-0);
+
+    // Reduce the gap between the navbar and content. The default 90px adds
+    // too much dead space when there's no large page header below the navbar.
+    --dg-content-padding-top: 24px;
+    --dg-content-padding-top-mobile: 16px;
+}
+
+// The margin-left formula in digital-garden-base.scss uses --dg-filetree-min-width
+// (250px) + --dg-filetree-gap (80px) = 330px as a floor even with no filetree,
+// which pushes content hard left instead of centering it. Override directly.
+body.no-filetree .content {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 // ==========================================================================
-// Search light-mode fixes
+// Color palette
 //
-// The Red Graphite theme maps --background-secondary to a very dark color in
-// light mode (it's meant for Obsidian's sidebar). The base garden template
-// uses --background-secondary for search input backgrounds, result cards, etc.
-// which makes them render dark-on-light. These overrides use --background-
-// modifier-form-field and --background-primary-alt instead, and scope explicit
-// fixes under .theme-light to avoid breaking dark mode.
+// Map unremarkable.dev's Bootstrap gray scale onto Obsidian CSS variable
+// names. This drives all downstream garden UI — search, callouts, etc. —
+// without per-component overrides. Light mode uses the `:root` palette from
+// _variables.scss; dark mode uses the [data-theme="dark"] palette.
 // ==========================================================================
 
-// Fix: --text-primary is never defined in any theme. Use --text-normal.
-.search-box input {
-    color: var(--text-normal);
-}
-
-// Placeholder text (missing from base template entirely)
-.search-box input::placeholder {
-    color: var(--text-faint, var(--text-muted));
-    opacity: 0.7;
-}
-
-// Light-mode-specific overrides for search UI
 .theme-light {
-    // Search input: use form-field background instead of --background-secondary
+    --text-normal:                  #212529;               // gray-900
+    --text-muted:                   rgba(33, 37, 41, 0.8);
+    --text-faint:                   rgba(33, 37, 41, 0.6);
+    --background-primary:           #fcfcfd;               // mix(white, gray-100, 50%)
+    --background-primary-alt:       #f8f9fa;               // gray-100
+    --background-secondary:         #e9ecef;               // gray-200
+    --background-modifier-border:   #ced4da;               // gray-400
+    --background-modifier-form-field: #fcfcfd;
+    --background-modifier-hover:    rgba(33, 37, 41, 0.05);
+
+    // Search: belt-and-suspenders overrides. Most of these are now resolved
+    // by --background-secondary being a light color, but kept explicitly.
     .search-box input {
-        background-color: var(--background-modifier-form-field, var(--background-primary));
+        background-color: var(--background-modifier-form-field);
         border-color: var(--background-modifier-border);
     }
 
-    // Search result cards: use a subtle tint instead of dark --background-secondary
-    .searchresult {
-        background-color: var(--background-primary-alt, #f5f5f5);
-
-        &:hover {
-            background-color: var(--background-modifier-hover, rgba(0, 0, 0, 0.05));
-        }
-
-        &.active {
-            background-color: var(--background-modifier-hover, rgba(0, 0, 0, 0.08));
-        }
+    .search-button {
+        background-color: var(--background-primary);
+        border-color: var(--background-modifier-border);
     }
 
-    // Result tags and preview tags
     .result-tags .tag,
     .preview-tags .tag {
         background-color: rgba(0, 0, 0, 0.06);
         color: var(--text-muted);
     }
 
-    // Keyboard shortcut badges
     .search-keys {
         background-color: rgba(0, 0, 0, 0.06);
         color: var(--text-faint);
     }
-
-    // Search button in navbar
-    .search-button {
-        background-color: var(--background-primary);
-        border-color: var(--background-modifier-border);
-    }
-
-    // Preview code blocks
-    .preview-content .preview-body {
-        code {
-            background-color: var(--background-primary-alt, #f0f0f0);
-        }
-
-        pre {
-            background-color: var(--background-primary-alt, #f0f0f0);
-        }
-    }
 }
 
-// Dark mode: keep the original behavior but fix the broken variable references
 .theme-dark {
-    .searchresult {
-        &:hover {
-            background-color: var(--background-primary-alt, rgba(255, 255, 255, 0.05));
-        }
-
-        &.active {
-            background-color: var(--background-primary-alt, rgba(255, 255, 255, 0.08));
-        }
-    }
+    --text-normal:                  #adb5bd;               // gray-500
+    --text-muted:                   rgba(173, 181, 189, 0.75);
+    --text-faint:                   rgba(173, 181, 189, 0.5);
+    --background-primary:           #212529;               // gray-900
+    --background-primary-alt:       #2b3035;               // mix(gray-800, gray-900, 50%)
+    --background-secondary:         #343a40;               // gray-800
+    --background-modifier-border:   #495057;               // gray-700
+    --background-modifier-form-field: #212529;
+    --background-modifier-hover:    rgba(173, 181, 189, 0.08);
 
     .result-tags .tag {
         background-color: rgba(255, 255, 255, 0.05);
@@ -101,42 +137,142 @@ body {
     }
 }
 
+// Search input text and placeholder — theme-neutral
+.search-box input {
+    color: var(--text-normal);
+}
+
+.search-box input::placeholder {
+    color: var(--text-faint, var(--text-muted));
+    opacity: 0.7;
+}
+
 // ==========================================================================
-// Theme toggle
+// Navbar / Header chrome — matching unremarkable.dev aesthetic
+// ==========================================================================
+
+.navbar {
+    background-color: var(--background-primary);
+    border-bottom: 1px solid var(--background-modifier-border, rgba(127, 127, 127, 0.15));
+
+    // Hide content until garden-nav.js rewrites the plugin-default markup.
+    // The bar itself stays full height (position: fixed) so nothing shifts.
+    .navbar-inner,
+    .navbar-actions {
+        opacity: 0;
+        transition: opacity 0.1s ease;
+    }
+
+    // The old single toggle is replaced by .theme-list; keep it invisible
+    // even before JS runs so it never flashes.
+    .theme-toggle {
+        display: none;
+    }
+
+    // Reveal both sides together once the rewrite is done.
+    &.garden-ready {
+        .navbar-inner,
+        .navbar-actions {
+            opacity: 1;
+        }
+    }
+
+    .navbar-inner {
+        display: flex;
+        align-items: center;
+        font-family: var(--font-monospace-default, ui-monospace, "Cascadia Mono", "Segoe UI Mono", monospace);
+        font-size: 0.9rem;
+    }
+
+    .site-backlink {
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.15s ease;
+
+        &:hover {
+            color: var(--text-normal);
+            text-decoration: none;
+        }
+    }
+
+    .site-separator {
+        color: var(--text-faint);
+        padding: 0 0.3rem;
+        user-select: none;
+    }
+
+    .site-garden-link {
+        color: var(--text-normal);
+        font-weight: 600;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}
+
+// ==========================================================================
+// Navbar actions and 3-way theme toggle (light / dark / auto)
 // ==========================================================================
 
 .navbar-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-m);
 }
 
-.theme-toggle {
-    background: none;
-    border: 1px solid var(--background-modifier-border, rgba(255, 255, 255, 0.1));
-    border-radius: 8px;
+.theme-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    margin-inline-start: 0;
+    padding: 0;
+    gap: var(--space-m);
+    align-items: center;
+
+    li {
+        display: flex;
+        align-items: center;
+        margin-inline-start: 0 !important;
+    }
+}
+
+.theme-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: transparent !important;
+    border: none;
+    box-shadow: none !important;
     cursor: pointer;
-    color: var(--text-muted);
+    color: var(--text-faint, var(--text-muted));
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
     padding: 0;
-    transition: border-color 0.2s ease, color 0.2s ease;
+    font-size: var(--step-1);
+    transition: color 0.15s ease;
 
     &:hover {
-        border-color: var(--text-muted);
         color: var(--text-normal);
     }
 
-    svg {
-        width: 16px;
-        height: 16px;
+    &.active {
+        color: #ffc107;
     }
 }
 
-// In the empty-navbar (no home link), position the toggle
-.empty-navbar .theme-toggle {
+.empty-navbar .theme-list {
     margin: 10px;
+}
+
+// ==========================================================================
+// Code: remove text-shadow from prism-okaidia and other sources
+// ==========================================================================
+
+code,
+pre,
+code[class*="language-"],
+pre[class*="language-"] {
+    text-shadow: none !important;
 }

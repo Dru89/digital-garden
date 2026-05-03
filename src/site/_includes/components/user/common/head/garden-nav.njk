@@ -1,0 +1,112 @@
+<script async src="https://kit.fontawesome.com/3e2794a8b1.js" crossorigin="anonymous"></script>
+<script defer>
+  // Rewrites the navbar with the unremarkable.dev breadcrumb and 3-way theme
+  // toggle. Runs on every page load so navbar.njk can stay at the plugin
+  // default — plugin updates to that file are automatically absorbed.
+  //
+  // "auto" is stored as a missing localStorage key so the FOUC script in
+  // pageheader.njk (which predates this script) keeps working unchanged.
+  (function() {
+    function prefersDark() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    function resolveTheme(pref) {
+      if (pref === 'dark') return 'dark';
+      if (pref === 'light') return 'light';
+      return prefersDark() ? 'dark' : 'light';
+    }
+
+    function applyTheme(resolved) {
+      var old = resolved === 'dark' ? 'light' : 'dark';
+      document.documentElement.classList.remove('theme-' + old);
+      document.documentElement.classList.add('theme-' + resolved);
+      // Bridge for unremarkable.dev CSS which uses [data-theme] attribute selectors
+      document.documentElement.setAttribute('data-theme', resolved);
+      if (document.body) {
+        document.body.className = document.body.className.replace(/theme-\w+/, 'theme-' + resolved);
+      }
+      window.__theme = resolved;
+    }
+
+    function updateActiveButtons(pref) {
+      document.querySelectorAll('[data-theme-value]').forEach(function(el) {
+        var isActive = el.dataset.themeValue === pref;
+        el.classList.toggle('active', isActive);
+        // sun and moon toggle between far (outline, inactive) and fas (solid, active).
+        // circle-half-stroke has no regular variant — it stays fas, active class handles color.
+        if (el.dataset.themeValue !== 'auto') {
+          var icon = el.querySelector('i');
+          if (icon) {
+            icon.classList.toggle('far', !isActive);
+            icon.classList.toggle('fas', isActive);
+          }
+        }
+      });
+    }
+
+    // Override the binary toggle from pageheader.njk with a 3-way version.
+    window.__setTheme = function(pref) {
+      if (pref === 'auto') {
+        localStorage.removeItem('theme');
+      } else {
+        localStorage.setItem('theme', pref);
+      }
+      applyTheme(resolveTheme(pref));
+      updateActiveButtons(pref);
+    };
+
+    function buildThemeList() {
+      var ul = document.createElement('ul');
+      ul.className = 'theme-list';
+      ul.setAttribute('role', 'group');
+      ul.setAttribute('aria-label', 'Color theme');
+      ul.innerHTML =
+        '<li><button class="theme-btn" data-theme-value="light" aria-label="Light mode" title="Light mode"><i class="far fa-sun"></i></button></li>' +
+        '<li><button class="theme-btn" data-theme-value="dark" aria-label="Dark mode" title="Dark mode"><i class="far fa-moon"></i></button></li>' +
+        '<li><button class="theme-btn" data-theme-value="auto" aria-label="System preference" title="System preference"><i class="fas fa-circle-half-stroke"></i></button></li>';
+      return ul;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var navbar = document.querySelector('.navbar');
+      if (navbar) {
+        // Replace site-name link with unremarkable.dev breadcrumb
+        var inner = navbar.querySelector('.navbar-inner');
+        if (inner) {
+          inner.innerHTML =
+            '<a href="https://unremarkable.dev" class="site-backlink">unremarkable.dev</a>' +
+            '<span class="site-separator" aria-hidden="true">/</span>' +
+            '<a href="/" class="site-garden-link">🌱 garden</a>';
+        }
+
+        // Swap the single toggle button for the 3-way toggle list
+        var actions = navbar.querySelector('.navbar-actions');
+        if (actions) {
+          var oldToggle = actions.querySelector('.theme-toggle');
+          if (oldToggle) oldToggle.parentNode.removeChild(oldToggle);
+          actions.insertBefore(buildThemeList(), actions.firstChild);
+        }
+
+        navbar.classList.add('garden-ready');
+      }
+
+      // Handle empty-navbar (dgHomeLink=false) the same way
+      var emptyNavbar = document.querySelector('.empty-navbar');
+      if (emptyNavbar) {
+        var oldToggle = emptyNavbar.querySelector('.theme-toggle');
+        if (oldToggle) oldToggle.parentNode.removeChild(oldToggle);
+        emptyNavbar.insertBefore(buildThemeList(), emptyNavbar.firstChild);
+      }
+
+      // Initialize active button state and wire up click handlers
+      var pref = localStorage.getItem('theme') || 'auto';
+      updateActiveButtons(pref);
+      document.querySelectorAll('[data-theme-value]').forEach(function(el) {
+        el.addEventListener('click', function() {
+          window.__setTheme(el.dataset.themeValue);
+        });
+      });
+    });
+  })();
+</script>
